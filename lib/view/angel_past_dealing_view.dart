@@ -1,14 +1,15 @@
 import 'package:angel_user_v1/controller/cat_angel_list_controller.dart';
+import 'package:angel_user_v1/controller/past_dealing_controller.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:angel_user_v1/constants.dart';
 import 'package:angel_user_v1/components.dart';
-
 class AngelPastDealing extends StatefulWidget {
 
   static String id = "AngelPastDealing";
   static var image_stream;
   static int image_count=0;
-//  static List<String> image_string=[];
+  static List<String> image_string=[];
 
   @override
   _AngelPastDealingState createState() => _AngelPastDealingState();
@@ -36,8 +37,8 @@ class _AngelPastDealingState extends State<AngelPastDealing> {
               ),
                Expanded(
                 flex: 3,
-                  child:StreamBuilder(
-                    stream: AngelListController.ImageStream,
+                  child:StreamBuilder<QuerySnapshot>(
+                    stream: PastDealingController.PastDealings,
                     builder: (context,snapshot){
                       if (!snapshot.hasData || snapshot.hasError){
                             print("i am about to generate progress");
@@ -48,11 +49,10 @@ class _AngelPastDealingState extends State<AngelPastDealing> {
                           );
                       }
                       final List<Widget> url_image = [];
-                        final images = snapshot.data;
                         try{
-                          final lst = images['past_dealings'];
-                          for (var lst_string in lst) {
-                            final url = lst_string.toString();
+                          for (var lst_string in snapshot.data.docs) {
+                            final url = lst_string['image'];
+                            AngelPastDealing.image_string.add(url);
                             url_image.add(
                                 GestureDetector(
                                   child: GetImageWidgetViaUrl(

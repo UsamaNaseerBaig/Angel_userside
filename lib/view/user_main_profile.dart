@@ -86,41 +86,6 @@ class _UserMainProfileState extends State<UserMainProfile> {
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
-                    margin: EdgeInsets.symmetric(vertical: 15,horizontal: 20),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search,size: 30,),
-                        Expanded(
-                          child: TextFormField(
-                            textAlign: TextAlign.center,
-                            decoration: new InputDecoration(
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                contentPadding:
-                                EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-                                hintText: "Search Categories For Shopping"
-                            ),
-                            onChanged: (v){
-                              print(v);
-                            },
-                          ),
-                        ),
-                        Icon(Icons.settings,size: 30,)
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
                   flex: 6,
                   child: ListView.builder(
                     itemBuilder: (context,index){

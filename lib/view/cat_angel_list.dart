@@ -25,43 +25,51 @@ class _CatAngelListState extends State<CatAngelList> {
             StreamBuilder<QuerySnapshot>(
               stream:  AngelListController.Angel_list,
                 builder: (context,snapshot){
-                if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                List<RequestTile> req_tile=[];
-                final detail = snapshot.data.docs;
-                for(var snap in detail){
-                  if (args.cat_index == 0){
-                    if (snap['personal_details.category'].toString() == 'Electronics'){
-                      var new_tile = RequestTile(
-                        title: snap['personal_details.full_name'],
-                        desc: snap['identity_proof.number'] ,
-                        icon: CircleAvatar(),
-                        end: Icon(Icons.navigate_next,color: Colors.black,),
-                      );
-                      req_tile.add(new_tile);
+                if(!snapshot.hasData || snapshot.hasError) return Center(child: CircularProgressIndicator());
+                List<RequestTile> req_tile = [];
+                try {
+                  final detail = snapshot.data.docs;
+                  for (var snap in detail) {
+                    if (args.cat_index == 0) {
+                      if (snap['personal_details.category'].toString() ==
+                          'Electronics') {
+                        var new_tile = RequestTile(
+                          title: snap['personal_details.full_name'],
+                          desc: snap['identity_proof.number'],
+                          icon: CircleAvatar(),
+                          end: Icon(Icons.navigate_next, color: Colors.black,),
+                        );
+                        req_tile.add(new_tile);
+                      }
+                    }
+                    else if (args.cat_index == 1) {
+                      if (snap['personal_details.category'].toString() ==
+                          'Home-Appliances') {
+                        var new_tile = RequestTile(
+                          title: snap['personal_details.full_name'],
+                          desc: snap['identity_proof.number'],
+                          icon: CircleAvatar(foregroundColor: Colors.green,),
+                          end: Icon(Icons.navigate_next, color: Colors.green,),
+                        );
+                        req_tile.add(new_tile);
+                      }
+                    }
+                    else if (args.cat_index == 2) {
+                      if (snap['personal_details.category'].toString() ==
+                          'Clothing') {
+                        var new_tile = RequestTile(
+                          title: snap['personal_details.full_name'],
+                          desc: snap['identity_proof.number'],
+                          icon: CircleAvatar(foregroundColor: Colors.pink,),
+                          end: Icon(Icons.navigate_next, color: Colors.pink,),
+                        );
+                        req_tile.add(new_tile);
+                      }
                     }
                   }
-                  else if (args.cat_index == 1){
-                    if (snap['personal_details.category'].toString() == 'Home-Appliances'){
-                      var new_tile = RequestTile(
-                        title: snap['personal_details.full_name'],
-                        desc: snap['identity_proof.number'],
-                        icon: CircleAvatar(foregroundColor: Colors.green,),
-                        end: Icon(Icons.navigate_next,color: Colors.green,),
-                      );
-                      req_tile.add(new_tile);
-                    }
-                  }
-                  else if (args.cat_index == 2){
-                    if (snap['personal_details.category'].toString() == 'Clothing'){
-                      var new_tile = RequestTile(
-                        title: snap['personal_details.full_name'],
-                        desc: snap['identity_proof.number'],
-                        icon: CircleAvatar(foregroundColor: Colors.pink,),
-                        end: Icon(Icons.navigate_next,color: Colors.pink,),
-                      );
-                      req_tile.add(new_tile);
-                    }
-                  }
+                }
+                catch(e){
+                  print(e);
                 }
                 return Expanded(
                   child: ListView.builder(

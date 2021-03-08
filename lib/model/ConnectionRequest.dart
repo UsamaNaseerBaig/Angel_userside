@@ -5,10 +5,14 @@ class ConnectionRequest{
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   
-  void AddConnection(String cnic,Map conn)async{
+  Future<bool> AddConnection(String cnic,Map conn)async{
+     bool connection_status = false;
      await _firestore.collection("Connection")
          .add(conn)
-         .then((value) => ConnectionRequestController.req_status = true)
-         .catchError(() => print("failed"));
+         .then((value) => connection_status = true)
+         .catchError((Object Error) => print(Error));
+     print("returning adding connection");
+     return connection_status;
+
   }
 }

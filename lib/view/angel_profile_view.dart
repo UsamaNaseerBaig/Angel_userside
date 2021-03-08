@@ -1,17 +1,19 @@
 import 'package:angel_user_v1/components.dart';
 import 'package:angel_user_v1/controller/ConnectionRequestController.dart';
 import 'package:angel_user_v1/controller/cat_angel_list_controller.dart';
-import 'package:angel_user_v1/controller/login_controller.dart';
 import 'package:angel_user_v1/controller/user_info_controller.dart';
 import 'package:angel_user_v1/view/angel_past_dealing_view.dart';
 import 'package:angel_user_v1/view/cat_angel_list.dart';
 import 'package:angel_user_v1/view/drawer_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:angel_user_v1/constants.dart';
 class AngelProfileView extends StatefulWidget {
   static String id = '/AngelProfileView';
   static String cnic;
+  static String angel_number = "";
   @override
   _AngelProfileViewState createState() => _AngelProfileViewState();
 }
@@ -20,7 +22,8 @@ class _AngelProfileViewState extends State<AngelProfileView> {
 
 
    Map profile = {};
-
+   String cat="";
+   String workingPlace = "";
   @override
   void initState() {
     getCurrentAngel();
@@ -33,196 +36,216 @@ class _AngelProfileViewState extends State<AngelProfileView> {
     print(args);
     await angel_obj.GetAngel(args);
     profile = angel_obj.angel_profile;
-    var personal = profile['personal_details'];
     var identity = profile['identity_proof'];
     setState(() {
+      AngelProfileView.angel_number = identity['number'];
       AngelProfileView.cnic = identity['cnic'];
     });
-
   }
+
+   void customLaunch(command)async{
+     if (await  canLaunch(command)) {
+       await launch(command);
+     } else {
+       throw 'Could not launch $command';
+     }
+   }
 
   @override
   Widget build(BuildContext context) {
     final CatArguments args = ModalRoute.of(context).settings.arguments;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xffFAFAFD),
-      body: SafeArea(
-        child:  Column(//tab bar for Angel Main profile
-          children: [
-            Expanded(//for header
-                flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      IconButton(
-                          icon : Icon(Icons.arrow_back_ios_rounded),
-                          onPressed: () => Navigator.pop(context),
-                      ),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      Column(
+        if(args.cat_index == 0) {
+          cat = "Mobile, Computer Laptop";
+          workingPlace = "Hafeez Center";
+        }
+        if(args.cat_index == 1) {
+          cat = "AC,Washing Machine,LED";
+          workingPlace = "Abid Market";
+        }
+        if(args.cat_index == 2) {
+          cat = "Stitched,UnStitched etc";
+          workingPlace = "Azam Market";
+        }
+        return Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Color(0xffFAFAFD),
+            body: SafeArea(
+              child:  Column(//tab bar for Angel Main profile
+                children: [
+                  Expanded(//for header
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              icon : Icon(Icons.arrow_back_ios_rounded),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            SizedBox(
+                              width: 50,
+                            ),
+                            Column(
+                              children: [
+                                Text("Angel's Profile",style: kTextStyle),
+                                Text("Service Time 10:00am - 10:00pm",style: TextStyle(color: Colors.green),),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                  ),
+                  Expanded(flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Mr. ${args.name}",style: kTextStyle,),
+                                Text(" ${cat} specialist",style: kDescStyle,),
+                              ],
+                            ),
+                            CircleAvatar()
+                          ],
+                        ),
+                      )
+                  ),
+                  Expanded(flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.star,color: Color(0xffFECD7A),),
+                                Icon(Icons.star,color: Color(0xffFECD7A)),
+                                Icon(Icons.star,color: Color(0xffFECD7A)),
+                                Icon(Icons.star,color: Color(0xffFECD7A)),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text("Clients Review Coming Soon",style: kDescStyle,)
+                          ],
+                        ),
+                      )
+                  ),
+                  Expanded(flex: 1,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Angel's Profile",style: kTextStyle),
-                          Text("Service Time 10:00am - 10:00pm",style: TextStyle(color: Colors.green),),
+                          RaisedButton(
+                            onPressed: ()=>customLaunch("tel:${args.number}"),
+                            padding: EdgeInsets.all(12),
+                            color: Colors.green.shade100,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            child: Container(
+                              child: Icon(Icons.call,color: Colors.green,),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          RaisedButton(
+                            onPressed: ()=>customLaunch('sms:${args.number}'),
+                            padding: EdgeInsets.all(12),
+                            color: Colors.deepPurple.shade100,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(100)),
+                            child: Container(
+                              child: Icon(Icons.message,color: Colors.deepPurple,),
+                            ),
+                          ),
                         ],
                       )
-                    ],
                   ),
-                )
-            ),
-            Expanded(flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Mr. ${args.name}",style: kTextStyle,),
-                          Text("Mobile, Computer, Laptop specialist",style: kDescStyle,),
-                        ],
-                      ),
-                      CircleAvatar()
-                    ],
-                  ),
-                )
-            ),
-            Expanded(flex: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.star,color: Color(0xffFECD7A),),
-                          Icon(Icons.star,color: Color(0xffFECD7A)),
-                          Icon(Icons.star,color: Color(0xffFECD7A)),
-                          Icon(Icons.star,color: Color(0xffFECD7A)),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text("70 Clients Review",style: kDescStyle,)
-                    ],
-                  ),
-                )
-            ),
-            Expanded(flex: 1,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    RaisedButton(
-                      onPressed: ()=>print("call"),
-                      padding: EdgeInsets.all(12),
-                      color: Colors.green.shade100,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Container(
-                        child: Icon(Icons.call,color: Colors.green,),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    RaisedButton(
-                      onPressed: ()=>print("message"),
-                      padding: EdgeInsets.all(12),
-                      color: Colors.deepPurple.shade100,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100)),
-                      child: Container(
-                        child: Icon(Icons.message,color: Colors.deepPurple,),
-                      ),
-                    ),
-                  ],
-                )
-            ),
-            Expanded(
-              flex: 5,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25,),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: Row(
+                  Expanded(
+                      flex: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 25,),
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            ContainerCard(
-                              title: "Successful Clients",
-                              desc: "10+",
-                              icon: Icons.shop,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            ContainerCard(
-                              title: "Experience",
-                              desc: "10 Years",
-                              icon: Icons.timer,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              child: ContainerCard(
-                                title: "Past Dealings",
-                                desc: "images",
-                                icon: Icons.account_circle,
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ContainerCard(
+                                    title: "Successful Clients",
+                                    desc: "10+",
+                                    icon: Icons.shop,
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  ContainerCard(
+                                    title: "Experience",
+                                    desc: "5 Years",
+                                    icon: Icons.timer,
+                                  ),
+                                ],
                               ),
-                              onTap: (){
-                                Navigator.pushNamed(context,AngelPastDealing.id);
-                              },
                             ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            ContainerCard(
-                              title: "Location",
-                              desc: "Hafeez Center",
-                              icon: Icons.location_on,
-                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    child: ContainerCard(
+                                      title: "Past Dealings",
+                                      desc: "images",
+                                      icon: Icons.account_circle,
+                                    ),
+                                    onTap: (){
+                                      Navigator.pushNamed(context,AngelPastDealing.id);
+                                    },
+                                  ),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  ContainerCard(
+                                    title: "Location",
+                                    desc: workingPlace,
+                                    icon: Icons.location_on,
+                                  ),
 
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                      )
                   ),
-                )
-            ),
-            Expanded(
-                child: ActionButton(
-                  name: "Request For Service",
-                  onTap: () {
-                    showModalBottomSheet<void>(context: context,isScrollControlled: true,builder: (BuildContext context){
-                      return CreatePostForAngel(
-                          index :args.cat_index);
-                    });
-                  }
-                ),
-            ),
+                  Expanded(
+                    child: ActionButton(
+                        name: "Request For Service",
+                        onTap: () {
+                          showModalBottomSheet<void>(context: context,isScrollControlled: true,builder: (BuildContext context){
+                            return CreatePostForAngel(
+                                index :args.cat_index);
+                          });
+                        }
+                    ),
+                  ),
 
-          ],
-        ),
-    )
-    );
+                ],
+              ),
+            )
+        );
+      }
   }
-}
+
 
 class CreatePostForAngel extends StatefulWidget {
   final int index;
@@ -258,7 +281,7 @@ class _CreatePostForAngelState extends State<CreatePostForAngel> {
               ),
               InputField(
                 type: TextInputType.number,
-                name: "Minimum Budget(Rs/-)",
+                name: "Your Budget(Rs/-)",
                 onChange: (v){
                   setState(() {
                     budget = int.parse(v);
@@ -284,16 +307,41 @@ class _CreatePostForAngelState extends State<CreatePostForAngel> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Minimum Charges",style: kTextStyle,),
+                  Text("Estimate Charges",style: kTextStyle,),
                   Text("Rs/-${charges.toString()}",style: kTextStyle,),
                 ],
               ),
               SizedBox(
-                height: 20,
+                height: 40,
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("-Write Your  Approx Budget",style: kDescStyle.copyWith(color: Colors.red),),
+                    Text("-Write Any Message For Angel",style: kDescStyle.copyWith(color: Colors.red),),
+                    Text("-Actual Price will be evaluated after Shopping",style: kDescStyle.copyWith(color: Colors.red),),
+                    Text("-Estimate Charges are Expect to change",style: kDescStyle.copyWith(color: Colors.red),)
+                  ],
+                ),
               ),
               ActionButton(
                 name: "Send Request",
-                onTap: (){
+                onTap: ()async{
+                  if(budget == 0 || message.isEmpty)
+                  {
+                    Fluttertoast.showToast(
+                        msg: "UnSuccessful",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                    return;
+                  }
                   String cat='';
                   print(widget.index);
                   if(widget.index == 0) cat = "Electronics";
@@ -309,10 +357,36 @@ class _CreatePostForAngelState extends State<CreatePostForAngel> {
                     "number" : UserInfoController.userNumber,
                     "time" : DateTime.now(),
                   };
-                  ConnectionRequestController.AddConnection(AngelProfileView.cnic, connection_req);
-                  ConnectionRequestController.req_status ? Navigator.pop(context):null;
-                  },
-              )
+                  print("send");
+                  var con_obj = ConnectionRequestController();
+                  bool con_status = await con_obj.AddConnection(AngelProfileView.cnic, connection_req);
+                  print(con_status);
+                  if (con_status)
+                  {
+                    Fluttertoast.showToast(
+                        msg: "Request Sent Successfully.Angel will Contact You",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                    Navigator.pop(context);
+                  }
+                  else{
+                    Fluttertoast.showToast(
+                        msg: "UnSuccessful",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

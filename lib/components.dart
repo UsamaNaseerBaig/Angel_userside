@@ -299,54 +299,51 @@ class ShoppingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: Container(
-        //color: Colors.white,
-        height: 190,
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-                child: Stack(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      margin: EdgeInsets.only(top: 70,bottom: 30,left: 20),
+    return Container(
+      //color: Colors.white,
+      height: 190,
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    Align(
-                      child: image,
-                    )
-                  ],
-                )
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                margin: EdgeInsets.only(top: 85,bottom: 40),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    )
-                ),
-                child: Column(
-                  children: [
-                    Text(title,style: kTextStyle,),
-                    Text(desc,style: kDescStyle.copyWith(
-                      fontSize: 15
-                    ),),
-                  ],
-                ),
+                    margin: EdgeInsets.only(top: 70,bottom: 30,left: 20),
+                  ),
+                  Align(
+                    child: image,
+                  )
+                ],
+              )
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              margin: EdgeInsets.only(top: 85,bottom: 40),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  )
+              ),
+              child: Column(
+                children: [
+                  Text(title,style: kTextStyle,),
+                  Text(desc,style: kDescStyle.copyWith(
+                    fontSize: 15
+                  ),),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:angel_user_v1/components.dart';
+import 'package:angel_user_v1/constants.dart';
 import 'package:angel_user_v1/controller/login_controller.dart';
 import 'package:angel_user_v1/view/stack.dart';
 import 'package:angel_user_v1/view/user_main_profile.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 class UserLogin extends StatefulWidget {
   static String id= '/UserLogin';
@@ -45,6 +47,10 @@ class _UserLoginState extends State<UserLogin> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text("angel",style: kLabelStyle.copyWith(fontSize: 61,color: kFillerColour,),),
+              SizedBox(
+                height: 40,
+              ),
               InputField(
                 type: TextInputType.number,
                 name: "Your number like 03004848253",
@@ -63,6 +69,24 @@ class _UserLoginState extends State<UserLogin> {
                     if (number.length == 11){
                       authBloc.logInFacebook(number);
                     }
+                },
+              ),
+              GestureDetector(
+                child: Text(
+                  "Need Help?",
+                  style: kDescStyle,
+                  textAlign: TextAlign.right,
+                ),
+                onTap: (){
+                  Fluttertoast.showToast(
+                      msg: "Call At 0320-1462009",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.orange,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
                 },
               )
             ],

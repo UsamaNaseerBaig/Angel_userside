@@ -2,9 +2,10 @@ import 'package:angel_user_v1/model/ConnectionRequest.dart';
 
 class ConnectionRequestController{
 
-  static bool req_status = false;
-
-  static void AddConnection(String cnic,Map con){
-    ConnectionRequest().AddConnection(cnic, con);
+   Future<bool> AddConnection(String cnic,Map con)async{
+     var con_obj = ConnectionRequest();
+    bool status = await con_obj.AddConnection(cnic, con);
+    print("in controller");
+    return status;
   }
 }
